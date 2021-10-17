@@ -18,7 +18,7 @@ pygame.display.set_caption('Natural Random Walker')
 
 FRAMES = int(1000/60)
 
-# BEGINNING
+# -----------------------------------------------------------------------
 walkers = []
 
 def create_random_walker(pos):
@@ -39,7 +39,6 @@ while True:
     for walker in walkers:
         walker.render(pygame, screen)
         walker.update(screen)
-
 
     pygame.display.update()
 

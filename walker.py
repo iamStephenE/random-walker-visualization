@@ -18,16 +18,13 @@ class Walker:
         pygame.draw.circle(screen, GREEN, self.pos, RADIUS)
         self.steerer.render(pygame, screen, self.pos)
 
+    # update the position, check for boundaries, and update the steerer
     def update(self, screen):
-        c = 30
-        x_vel = (self.steerer.focus_pos[0] - self.pos[0]) / c
-        y_vel = (self.steerer.focus_pos[1] - self.pos[1]) / c
+        self.update_pos()
+        self.check_boundaries(screen)
+        self.steerer.update(self.pos)
 
-        self.pos[0] += x_vel
-        self.pos[1] += y_vel
-
-        self.add_position()
-
+    def check_boundaries(self, screen):
         if self.pos[0] > screen.get_width():
             self.pos[0] = 0
         elif self.pos[0] < 0:
@@ -38,7 +35,15 @@ class Walker:
         elif self.pos[1] < 0:
             self.pos[1] = screen.get_height()
 
-        self.steerer.update(self.pos)
+    def update_pos(self):
+        c = 50
+        x_vel = (self.steerer.focus_pos[0] - self.pos[0]) / c
+        y_vel = (self.steerer.focus_pos[1] - self.pos[1]) / c
+
+        self.pos[0] += x_vel
+        self.pos[1] += y_vel
+
+        self.add_position()
 
     def add_position(self):
         if len(self.positions) > 200:
