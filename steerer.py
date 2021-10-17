@@ -40,26 +40,29 @@ class Steerer:
         pygame.draw.line(screen, BLUE, w_pos, self.focus_pos, width=2)
 
     def update(self, w_pos):
-        self.w_pos = w_pos
-
         # change its position due to its direction of motion and rotate by an angle
         # cross product
+        cp = self.cross_product(w_pos)
+
+        # to have less spirals, make it so that the turning rate of the entire steerer system
+        # is greater than the rate at which the focus (red point) turns
+        self.angle += cp / 45000
+        self.focus_angle += cp / 50000
+
+        self.steerer_pos = [w_pos[0] + self.distance * math.cos(self.angle), w_pos[1] + self.distance * math.sin(self.angle)]
+        self.update_focus_pos()
+
+    def cross_product(self, w_pos):
         v1 = (self.steerer_pos[0] - self.focus_pos[0],self.steerer_pos[1] - self.focus_pos[1])
         v2 = (self.steerer_pos[0] - w_pos[0], self.steerer_pos[1] - w_pos[1])
-        cp = v1[0] * v2[1] - v1[1] * v2[0]
-        if cp > 0:
-            self.angle += 0.01
-        else:
-            self.angle -= 0.01
-            
-        self.steerer_pos = [w_pos[0] + self.distance * math.cos(self.angle), w_pos[1] + self.distance * math.sin(self.angle)]
+        return v1[0] * v2[1] - v1[1] * v2[0]
 
-        self.focus_pos = self.calculate_focus_pos()
-
+    # update by moving it a random degree
+    def update_focus_pos(self):
         inc = self.step if random.randint(1, 2) == 1 else -self.step
         self.focus_angle += inc
-        self.focus_pos[0] = self.steerer_pos[0] + (self.radius-self.thickness/2) * math.cos(self.focus_angle)
-        self.focus_pos[1] = self.steerer_pos[1] + (self.radius-self.thickness/2) * math.sin(self.focus_angle)
+        self.focus_pos = self.calculate_focus_pos()
+            
 
 
 
